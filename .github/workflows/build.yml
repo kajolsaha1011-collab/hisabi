@@ -25,16 +25,26 @@ jobs:
         run: |
           sed -i "s/versionCode 1/versionCode ${{ github.run_number }}/" android/app/build.gradle
           sed -i "s/versionName \"1.0\"/versionName \"1.0.${{ github.run_number }}\"/" android/app/build.gradle
-      - name: App icon (only if icon.png exists)
-        if: hashFiles('icon.png') != ''
-        continue-on-error: true
+      - name: Create app icons
         run: |
+          for f in icon.png icon-foreground.png icon-background.png; do
+            if [ ! -f "$f" ]; then echo "ERROR: $f repository-te nei. Upload koren."; exit 1; fi
+          done
           sudo apt-get update -y && sudo apt-get install -y imagemagick
-          mkdir -p assets
-          convert icon.png -background none -resize 1024x1024 -gravity center -extent 1024x1024 assets/icon-only.png
-          if [ -f icon-foreground.png ]; then convert icon-foreground.png -background none -resize 1024x1024 -gravity center -extent 1024x1024 assets/icon-foreground.png; fi
-          if [ -f icon-background.png ]; then convert icon-background.png -resize '1024x1024!' assets/icon-background.png; fi
-          npx --yes @capacitor/assets generate --android --iconBackgroundColor '#ffffff' --iconBackgroundColorDark '#ffffff'
+          RES=android/app/src/main/res
+          for spec in mdpi:48:108 hdpi:72:162 xhdpi:96:216 xxhdpi:144:324 xxxhdpi:192:432; do
+            IFS=: read d l a <<< "$spec"
+            mkdir -p "$RES/mipmap-$d"
+            convert icon.png -resize ${l}x${l} "$RES/mipmap-$d/ic_launcher.png"
+            convert icon.png -resize ${l}x${l} \( -size ${l}x${l} xc:black -fill white -draw "circle $((l/2)),$((l/2)) $((l/2)),0" \) -alpha off -compose CopyOpacity -composite "$RES/mipmap-$d/ic_launcher_round.png"
+            convert icon-foreground.png -resize ${a}x${a} "$RES/mipmap-$d/hisabi_fg.png"
+            convert icon-background.png -resize "${a}x${a}!" "$RES/mipmap-$d/hisabi_bg.png"
+          done
+          mkdir -p "$RES/mipmap-anydpi-v26"
+          for n in ic_launcher ic_launcher_round; do
+            printf '%s\n' '<?xml version="1.0" encoding="utf-8"?>' '<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">' '    <background android:drawable="@mipmap/hisabi_bg"/>' '    <foreground android:drawable="@mipmap/hisabi_fg"/>' '</adaptive-icon>' > "$RES/mipmap-anydpi-v26/$n.xml"
+          done
+          ls "$RES"
       - run: npx cap sync android
       - run: cd android && chmod +x gradlew && ./gradlew assembleDebug
       - run: cp android/app/build/outputs/apk/debug/app-debug.apk hisabi.apk
