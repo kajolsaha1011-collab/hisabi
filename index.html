@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>হিসাবি – মাসিক বাজেট ট্র্যাকার</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--tx:#0f172a;--mu:#64748b;--bd:#e2e8f0;--pri:#4f46e5;--unn:#ef4444;--hd1:#1e1b4b;--hd2:#4338ca;
+box-sizing:border-box;padding-top:max(env(safe-area-inset-top,0px),var(--safe-area-inset-top,0px));padding-bottom:max(env(safe-area-inset-bottom,0px),var(--safe-area-inset-bottom,0px));color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1020;--card:#151b2e;--tx:#e8ecf8;--mu:#94a3b8;--bd:#263049;--pri:#818cf8;--hd1:#0f1330;--hd2:#312e81;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b1020;--card:#151b2e;--tx:#e8ecf8;--mu:#94a3b8;--bd:#263049;--pri:#818cf8;--hd1:#0f1330;--hd2:#312e81;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:"Hind Siliguri","Noto Sans Bengali","Segoe UI",sans-serif;line-height:1.5}
+header{background:linear-gradient(135deg,var(--hd1),var(--hd2));color:#fff;padding:22px 16px 70px}
+.w{max-width:980px;margin:0 auto}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+h1{font-size:1.5rem;margin:0;font-weight:700}
+.sub{opacity:.8;font-size:.9rem;margin:2px 0 0}
+.ctl{display:flex;gap:8px;align-items:center}
+input,select,button{font:inherit}
+.mi{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:10px;padding:8px 10px;width:auto}
+.mi::-webkit-calendar-picker-indicator{filter:invert(1)}
+.ib{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:10px;padding:8px 12px;cursor:pointer}
+main{max-width:980px;margin:-50px auto 40px;padding:0 16px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;box-shadow:0 8px 24px rgba(15,23,42,.06);margin-bottom:16px}
+.card h2{font-size:1.05rem;margin:0 0 12px}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.k{border-radius:14px;padding:14px;background:var(--card);border:1px solid var(--bd);border-top:4px solid var(--c)}
+.k small{color:var(--mu);display:block}
+.k b{font-size:1.3rem;display:block}
+.k span{font-size:.8rem;color:var(--mu)}
+.two{display:grid;gap:16px;grid-template-columns:1fr 1fr}.two{margin-bottom:16px}.two .card{margin-bottom:0}.card>:last-child,.bar:last-child{margin-bottom:0}.card>#tips{margin-bottom:0}.pm:empty{display:none}
+@media(max-width:720px){.two{grid-template-columns:1fr}}
+.inc{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.f{display:grid;gap:10px;grid-template-columns:2fr 1fr 1.2fr 1.1fr auto}
+@media(max-width:720px){.f{grid-template-columns:1fr 1fr}.f input:first-child{grid-column:1/-1}.f button{grid-column:1/-1}}
+.f input[type=date]{min-width:0}
+input,select{background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:10px;padding:10px;width:100%}
+.btn{background:var(--pri);color:#fff;border:0;border-radius:10px;padding:10px 18px;font-weight:600;cursor:pointer}
+.donut{width:170px;height:170px;border-radius:50%;margin:4px auto 14px;display:grid;place-items:center}
+.donut div{width:110px;height:110px;border-radius:50%;background:var(--card);display:grid;place-items:center;text-align:center;font-size:.8rem;color:var(--mu)}
+.donut b{display:block;font-size:1.1rem;color:var(--tx)}
+.bar{margin:10px 0}
+.bar .r{display:flex;justify-content:space-between;font-size:.9rem}
+.bar .t{height:9px;background:var(--bd);border-radius:9px;overflow:hidden;margin-top:4px}
+.bar .t i{display:block;height:100%;border-radius:9px;background:var(--c)}
+.tip{border-radius:12px;padding:12px 14px;font-size:.95rem;margin-top:8px;background:var(--bg);border-left:4px solid var(--pri)}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:480px}
+th,td{text-align:left;padding:5px 8px;border-bottom:1px solid var(--bd);font-size:.92rem;line-height:1.35}
+th{color:var(--mu);font-weight:500}
+.tag{display:inline-block;padding:2px 10px;border-radius:99px;font-size:.78rem;color:#fff;background:var(--c)}
+.x{background:none;border:0;color:var(--unn);cursor:pointer;font-size:1.1rem;padding:0 4px;line-height:1}
+.em{text-align:center;color:var(--mu);padding:18px}
+.tabs{display:flex;gap:6px;margin-bottom:12px;background:var(--bg);padding:4px;border-radius:12px;width:fit-content}.tabs button{border:0;background:none;color:var(--mu);padding:8px 16px;border-radius:9px;cursor:pointer;font-weight:600}.tabs button.on{background:var(--pri);color:#fff}.cols{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}.cols[hidden],.tw[hidden]{display:none}.col{border:1px solid var(--bd);border-top:4px solid var(--c);border-radius:12px;padding:12px;background:var(--bg)}.col h3{margin:0;font-size:.95rem}.col .tt{font-size:1.2rem;font-weight:700;margin:2px 0 8px}.col .it{display:flex;justify-content:space-between;gap:8px;padding:4px 0;line-height:1.3;border-top:1px solid var(--bd);font-size:.9rem}.col .it span:last-child{font-weight:600;white-space:nowrap}.col .it b{font-weight:500;display:block}.col .dt{display:block;color:var(--mu);font-size:.75rem}.col .no{color:var(--mu);font-size:.85rem;padding:8px 0}
+.f2{display:grid;gap:10px;grid-template-columns:1.4fr 1fr auto;align-items:center}@media(max-width:720px){.f2{grid-template-columns:1fr}}.f2 [hidden]{display:none}.pm{color:var(--mu);font-size:.85rem;margin:10px 0 0;min-height:1.2em}#pv{position:fixed;inset:0;z-index:50;background:#0b1020;overflow:auto;padding:calc(max(env(safe-area-inset-top,0px),var(--safe-area-inset-top,0px)) + 10px) 12px calc(max(env(safe-area-inset-bottom,0px),var(--safe-area-inset-bottom,0px)) + 12px)}#pv[hidden]{display:none}.pvb{position:sticky;top:0;z-index:2;display:flex;gap:8px;padding:4px 0 8px;background:#0b1020;max-width:800px;margin:0 auto}.pvb .btn{flex:1}.pvx{background:#475569;flex:0 0 auto!important}.pvh{color:#94a3b8;font-size:.85rem;text-align:center;margin:2px 0 10px}#pvi img{display:block;width:100%;max-width:800px;margin:0 auto 12px;border-radius:8px;background:#fff}
+.tg{width:100%;margin-top:14px;display:flex;align-items:center;gap:10px;background:var(--bg);border:1px dashed var(--bd);color:var(--tx);border-radius:12px;padding:11px 14px;cursor:pointer;font-weight:600;text-align:left}.tg:hover{border-color:var(--pri)}.tg>span:first-child{flex:1}.tg .ct{flex:0 0 auto;font-size:.78rem;background:#10b981;color:#fff;border-radius:99px;padding:1px 10px}.tg .ct:empty{display:none}.tg .cv{font-style:normal;color:var(--mu);transition:transform .2s}.tg[aria-expanded=true]{border-style:solid;border-color:var(--pri)}.tg[aria-expanded=true] .cv{transform:rotate(180deg)}
+#ipn{padding:16px 18px 18px}#ipn[hidden]{display:none}#ipn table{min-width:360px}.fi{display:grid;gap:10px;grid-template-columns:2fr 1fr 1.1fr auto;margin-bottom:12px}.fi input[type=date]{min-width:0}.btn.gn{background:#10b981}@media(max-width:720px){.fi{grid-template-columns:1fr 1fr}.fi input:first-child{grid-column:1/-1}.fi button{grid-column:1/-1}}
+.isum{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:12px 0 0;padding:10px 14px;border-radius:12px;background:var(--bg);font-size:.9rem;color:var(--mu)}.isum b{color:#10b981}
+.ih{padding:0;overflow:hidden}.ihero{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--hd1),var(--hd2));color:#fff;padding:20px 18px 18px}.ihero::after{content:"";position:absolute;right:-50px;top:-50px;width:170px;height:170px;border-radius:50%;background:rgba(255,255,255,.08)}.ihr{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;position:relative;z-index:1}.ilb{font-size:.95rem;opacity:.92;font-weight:600}.imo{font-size:.8rem;background:rgba(255,255,255,.16);border-radius:99px;padding:2px 12px}.iamt{font-size:2.3rem;font-weight:700;line-height:1.25;margin:8px 0 2px;position:relative;z-index:1}.ihint{margin:0;font-size:.85rem;opacity:.78;position:relative;z-index:1}.ihint:empty{display:none}
+.ihero .tg{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.32);color:#fff;margin-top:14px;position:relative;z-index:1}.ihero .tg:hover,.ihero .tg[aria-expanded=true]{border-color:#fff;background:rgba(255,255,255,.22)}.ihero .tg .cv{color:#fff}
+.ph{font-size:.88rem;color:var(--mu);margin:0 0 10px;font-weight:600}#ipn .ph:not(:first-child){margin-top:20px}
+#pn1[hidden],#pn2[hidden]{display:none}
+.ln .lhero{text-align:center;border-radius:16px;padding:18px 14px;color:#fff;background:linear-gradient(135deg,#4f46e5,#7c3aed 55%,#db2777)}.lem{font-size:2rem;line-height:1.2}.lhero h3{margin:4px 0 2px;font-size:1.2rem}.lhero p{margin:0;font-size:.88rem;opacity:.92}
+.lsec{display:flex;align-items:center;gap:8px;font-weight:700;margin:22px 0 10px}.lsec i{font-style:normal;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--pri);color:#fff;font-size:.8rem;flex:0 0 auto}.lsec small{color:var(--mu);font-weight:500;font-size:.78rem}
+.lt{border:1px solid var(--bd);border-left:5px solid var(--c);border-radius:14px;margin:8px 0;background:var(--bg);background:color-mix(in srgb,var(--c) 7%,var(--card))}.lt summary{display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer;list-style:none}.lt summary::-webkit-details-marker{display:none}.lt summary::after{content:"▾";margin-left:auto;color:var(--mu);transition:transform .2s}.lt[open] summary::after{transform:rotate(180deg)}
+.li{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:1.4rem;background:var(--c);flex:0 0 auto}.lx b{display:block}.lx small{color:var(--mu)}
+.lt p{margin:0 14px 10px;font-size:.92rem}.chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 14px 10px}.chips span{font-size:.8rem;padding:3px 10px;border-radius:99px;background:var(--card);border:1px solid var(--bd)}.lq{margin:0 14px 14px;padding:9px 12px;border-radius:10px;font-size:.88rem;font-weight:600;background:var(--card);border:1px dashed var(--c);color:var(--tx)}
+.lex{display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:center}.ldn{width:132px;height:132px;border-radius:50%;background:conic-gradient(#2563eb 0 50%,#f59e0b 50% 60%,#ef4444 60% 70%,#10b981 70% 100%);display:grid;place-items:center;flex:0 0 auto}.ldn>div{width:86px;height:86px;border-radius:50%;background:var(--card);display:grid;place-items:center;text-align:center;font-size:.7rem;color:var(--mu);line-height:1.25}.ldn b{display:block;font-size:.9rem;color:var(--tx)}
+.lg{flex:1;min-width:190px}.lg>div{display:flex;justify-content:space-between;gap:8px;padding:6px 0 6px 12px;border-left:5px solid var(--c);border-radius:3px;margin:5px 0;font-size:.9rem}.lg b{white-space:nowrap}
+.lnote{margin:10px 0 0;font-size:.85rem;color:var(--mu);background:var(--bg);padding:9px 12px;border-radius:10px}
+.lrules,.lpil{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.lrules>div,.lpil>div{text-align:center;border-radius:14px;padding:12px 6px;border:1px solid var(--bd);border-top:4px solid var(--c);background:var(--bg);background:color-mix(in srgb,var(--c) 8%,var(--card))}.lrules b{display:block;font-size:1.15rem;color:var(--c)}.lrules span{font-size:.78rem;color:var(--mu)}
+.lpil em{font-style:normal;font-size:1.6rem;display:block}.lpil b{display:block}.lpil span{font-size:.76rem;color:var(--mu);display:block;line-height:1.35}
+.lst{display:flex;gap:12px;align-items:flex-start;margin:10px 0}.lst>i{font-style:normal;flex:0 0 auto;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:#fff;background:linear-gradient(135deg,#4f46e5,#7c3aed)}.lst b{display:block}.lst span{font-size:.86rem;color:var(--mu)}
+.lqt{margin:14px 0;padding:14px 16px;border-radius:14px;border-left:5px solid #7c3aed;background:var(--bg);font-weight:600;line-height:1.55}.lgo{width:100%}
+footer{text-align:center;color:var(--mu);font-size:.8rem;padding-bottom:24px}
+</style>
+</head>
+<body>
+<header><div class="w"><div class="top">
+<div><h1>💰 হিসাবি</h1><p class="sub">প্রতিটি টাকাকে সচেতনভাবে কাজে লাগান</p></div>
+<div class="ctl"><input type="month" id="mo" class="mi" aria-label="মাস"><button class="ib" id="th" aria-label="থিম">◐</button></div>
+</div></div></header>
+<main>
+<section class="card ih"><div class="ihero">
+<div class="ihr"><span class="ilb">💰 এই মাসের মোট আয়</span><span class="imo" id="imo"></span></div>
+<div class="iamt" id="itot">৳০</div>
+<p class="ihint" id="ihint"></p>
+<button class="tg" id="itg" type="button" aria-expanded="false" aria-controls="ipn"><span>✏️ আয় যোগ / পরিবর্তন করুন</span><span class="ct" id="icnt"></span><i class="cv">▾</i></button>
+</div>
+<div id="ipn" hidden>
+<h3 class="ph">নির্ধারিত মাসিক আয় (যেমন বেতন)</h3>
+<div class="inc"><span>৳</span><input type="number" id="inc" min="0" placeholder="নির্ধারিত মাসিক আয় (যেমন ৫০০০০)" style="max-width:300px"><button class="btn" id="si" type="button">সংরক্ষণ</button></div>
+<h3 class="ph">তারিখ অনুযায়ী আয়ের এন্ট্রি</h3>
+<div class="fi"><input id="in_n" placeholder="আয়ের উৎস (যেমন বোনাস, ফ্রিল্যান্স)"><input id="in_a" type="number" min="0" placeholder="টাকা"><input id="in_d" type="date" aria-label="তারিখ"><button class="btn gn" id="in_ad" type="button">আয় যোগ করুন</button></div>
+<div class="tw"><table><thead><tr><th>তারিখ</th><th>উৎস</th><th>টাকা</th><th></th></tr></thead><tbody id="ib"></tbody></table></div>
+<div class="isum" id="isum"></div>
+</div></section>
+
+<section class="grid" id="kp"></section>
+
+<div class="two" style="margin-top:16px">
+<section class="card"><h2>আয় কোথায় যাচ্ছে</h2><div class="donut" id="dn"><div><span><b id="dp">০%</b>ব্যবহৃত</span></div></div><div id="bars"></div></section>
+<section class="card"><div class="tabs"><button id="p1" class="on" type="button">💡 স্মার্ট পরামর্শ</button><button id="p2" type="button">📚 লার্নিং</button></div>
+<div id="pn1"><div id="tips"></div>
+<p style="color:var(--mu);font-size:.85rem;margin:14px 0 0">নিজেকে প্রশ্ন করুন: প্রয়োজনীয় → এটা কি জরুরি? ইচ্ছাকৃত → এটা কি আনন্দ বাড়াবে? অপ্রয়োজনীয় → না কিনলে কি ক্ষতি হতো?</p></div>
+<div id="pn2" class="ln" hidden>
+<div class="lhero"><div class="lem">📚💰</div><h3>টাকার হিসাব শিখুন</h3><p>মাত্র ৩ মিনিটে বুঝে নিন, আপনার টাকা কোথায় যাচ্ছে আর কোথায় যাওয়া উচিত।</p></div>
+
+<div class="lsec"><i>১</i> খরচের ৪টি ভাগ <small>(ট্যাপ করে খুলুন)</small></div>
+<details class="lt" style="--c:#2563eb" open><summary><span class="li">🏠</span><span class="lx"><b>প্রয়োজনীয় খরচ</b><small>Necessary</small></span></summary>
+<p>যা না করলেই নয়। স্বাভাবিক জীবন, স্বাস্থ্য ও নিরাপত্তার খরচ।</p>
+<div class="chips"><span>বাসা ভাড়া ও বিদ্যুৎ বিল</span><span>বাজার</span><span>চিকিৎসা ও ওষুধ</span><span>যাতায়াত</span><span>সন্তানের পড়াশোনা</span></div>
+<div class="lq">❓ এটা কি আমার জীবনের জন্য জরুরি?</div></details>
+<details class="lt" style="--c:#f59e0b"><summary><span class="li">🎉</span><span class="lx"><b>ইচ্ছাকৃত খরচ</b><small>Intentional</small></span></summary>
+<p>আনন্দ ও জীবনমান বাড়াতে সচেতনভাবে করা খরচ। না করলেও চলে, করলে জীবন সুন্দর হয়।</p>
+<div class="chips"><span>পরিবার নিয়ে রেস্টুরেন্টে খাওয়া</span><span>ভ্রমণ</span><span>শখের জিনিস</span><span>সিনেমা ও বিনোদন</span><span>পছন্দের কোর্স</span></div>
+<div class="lq">❓ এটা কি আমার আনন্দ বা জীবনমান বাড়াবে?</div></details>
+<details class="lt" style="--c:#ef4444"><summary><span class="li">🛍️</span><span class="lx"><b>অপ্রয়োজনীয় খরচ</b><small>Wasteful</small></span></summary>
+<p>অসচেতনতা, আবেগ বা প্রলোভনে হয়ে যাওয়া খরচ। না করলে টাকা বেঁচে যেত।</p>
+<div class="chips"><span>অফার দেখে কেনা</span><span>একই জিনিস একাধিক</span><span>লোক দেখানো দামি জিনিস</span><span>অকারণ ডেলিভারি চার্জ</span><span>পরিকল্পনাহীন অনলাইন কেনাকাটা</span><span>ব্যবহার না করা সাবস্ক্রিপশন</span></div>
+<div class="lq">❓ এটা না কিনলে কি আমার কোনো ক্ষতি হতো?</div></details>
+<details class="lt" style="--c:#10b981"><summary><span class="li">🌱</span><span class="lx"><b>সঞ্চয় ও বিনিয়োগ</b><small>Savings</small></span></summary>
+<p>আজকের আয় থেকে ভবিষ্যতের জন্য রাখা অংশ। এটাই আর্থিক স্বাধীনতার ভিত্তি।</p>
+<div class="chips"><span>মাসিক সঞ্চয়</span><span>জরুরি তহবিল</span><span>বিনিয়োগ</span></div>
+<div class="lq">❓ ভবিষ্যতের জন্য আমি কতটা রাখলাম?</div></details>
+
+<div class="lsec"><i>২</i> বাস্তব উদাহরণ <small>(মাসিক আয় ৳৫০,০০০)</small></div>
+<div class="lex"><div class="ldn"><div><span><b>৳৫০,০০০</b>মোট আয়</span></div></div>
+<div class="lg"><div style="--c:#2563eb"><span>প্রয়োজনীয়</span><b>৳২৫,০০০ · ৫০%</b></div><div style="--c:#f59e0b"><span>ইচ্ছাকৃত</span><b>৳৫,০০০ · ১০%</b></div><div style="--c:#ef4444"><span>অপ্রয়োজনীয়</span><b>৳৫,০০০ · ১০%</b></div><div style="--c:#10b981"><span>সঞ্চয়</span><b>৳১৫,০০০ · ৩০%</b></div></div></div>
+<p class="lnote">💡 অপ্রয়োজনীয় ৫,০০০ টাকা বাঁচাতে পারলে সঞ্চয় হতে পারত ৳২০,০০০।</p>
+
+<div class="lsec"><i>৩</i> সোনালি নিয়ম <small>(অ্যাপের লক্ষ্যসীমা)</small></div>
+<div class="lrules"><div style="--c:#2563eb"><b>≤ ৬০%</b><span>প্রয়োজনীয় খরচ</span></div><div style="--c:#ef4444"><b>≤ ১০%</b><span>অপ্রয়োজনীয় খরচ</span></div><div style="--c:#10b981"><b>≥ ২০%</b><span>সঞ্চয় ও বিনিয়োগ</span></div></div>
+<p class="lnote">অ্যাপের পরামর্শ ও পিডিএফ রিপোর্টের ✓ / ! চিহ্ন এই সীমা ধরেই দেওয়া হয়।</p>
+
+<div class="lsec"><i>৪</i> অ্যাপটি যেভাবে কাজ করে</div>
+<div class="lst"><i>১</i><div><b>💵 আয় যোগ করুন</b><span>ওপরের আয় কার্ডে বেতন ও অন্য আয় তারিখসহ দিন।</span></div></div>
+<div class="lst"><i>২</i><div><b>✍️ খরচ লিখুন</b><span>বিবরণ, টাকা, ধরন ও তারিখ দিয়ে "যোগ করুন" চাপুন।</span></div></div>
+<div class="lst"><i>৩</i><div><b>📊 ড্যাশবোর্ড দেখুন</b><span>কোন ধরনে কত শতাংশ গেল আর কত বাকি, এক নজরে।</span></div></div>
+<div class="lst"><i>৪</i><div><b>💡 পরামর্শ নিন</b><span>"স্মার্ট পরামর্শ" ট্যাবে আপনার হিসাব অনুযায়ী টিপস পাবেন।</span></div></div>
+<div class="lst"><i>৫</i><div><b>📄 রিপোর্ট নিন</b><span>দৈনিক, সাপ্তাহিক বা মাসিক পিডিএফ ডাউনলোড করুন।</span></div></div>
+
+<div class="lsec"><i>৫</i> মূল কথা</div>
+<div class="lpil"><div style="--c:#2563eb"><em>🏠</em><b>দায়িত্ব</b><span>প্রয়োজনীয় খরচে জীবন ঠিক রাখুন</span></div><div style="--c:#f59e0b"><em>🎉</em><b>আনন্দ</b><span>ইচ্ছাকৃত খরচে জীবন উপভোগ করুন</span></div><div style="--c:#10b981"><em>🌱</em><b>ভবিষ্যৎ</b><span>সঞ্চয়ে স্বাধীনতা গড়ুন</span></div></div>
+<p class="lnote">আর অপ্রয়োজনীয় খরচ যতটা সম্ভব কমান।</p>
+<blockquote class="lqt">আর্থিক স্বাধীনতা মানে শুধু বেশি আয় নয়; প্রতিটি টাকাকে সচেতনভাবে সঠিক কাজে লাগাতে শেখা।</blockquote>
+<button class="btn lgo" id="lgo" type="button">💡 এবার নিজের হিসাবের পরামর্শ দেখুন</button>
+</div></section>
+</div>
+
+<section class="card"><h2>নতুন খরচ যোগ করুন</h2>
+<div class="f"><input id="n" placeholder="বিবরণ (যেমন বাসা ভাড়া)"><input id="a" type="number" min="0" placeholder="টাকা"><select id="c"></select><input id="dd" type="date" aria-label="তারিখ"><button class="btn" id="ad">যোগ করুন</button></div></section>
+
+<section class="card"><h2>খরচের বিবরণ</h2><div class="tabs"><button id="t1" class="on">📋 তালিকা</button><button id="t2">🗂️ ধরন অনুযায়ী</button></div><div id="v1" class="tw"><table><thead><tr><th>তারিখ</th><th>বিবরণ</th><th>ধরন</th><th>টাকা</th><th></th></tr></thead><tbody id="tb"></tbody></table></div><div id="v2" class="cols" hidden></div></section>
+<section class="card"><h2>📄 রিপোর্ট পিডিএফ ডাউনলোড</h2>
+<div class="f2"><select id="pk" aria-label="রিপোর্টের ধরন"><option value="d">দৈনিক রিপোর্ট</option><option value="w">সাপ্তাহিক রিপোর্ট (শেষ ৭ দিন)</option><option value="m">মাসিক রিপোর্ট (উপরে নির্বাচিত মাস)</option></select><input type="date" id="pd" aria-label="তারিখ"><button class="btn" id="pb">⬇ পিডিএফ ডাউনলোড</button></div>
+<p class="pm" id="pm"></p></section>
+</main>
+<div id="pv" hidden><div class="pvb"><button class="btn" id="pvd">⬇ পিডিএফ ডাউনলোড / শেয়ার</button><button class="btn pvx" id="pvc">✕ বন্ধ</button></div><p class="pvh" id="pvh"></p><div id="pvi"></div></div>
+<footer>Designed &amp; Developed by Abhi</footer>
+<script>
+const CATS={n:{l:"প্রয়োজনীয় খরচ",c:"#2563eb"},i:{l:"ইচ্ছাকৃত খরচ",c:"#f59e0b"},u:{l:"অপ্রয়োজনীয় খরচ",c:"#ef4444"},s:{l:"সঞ্চয় ও বিনিয়োগ",c:"#10b981"}};
+const $=id=>document.getElementById(id);
+const bn=v=>Math.round(v).toLocaleString("bn-BD");
+const money=v=>"৳"+bn(v);
+let DB={months:{}};
+try{const r=localStorage.getItem("khoroch-v1");if(r)DB=JSON.parse(r)||DB;if(!DB.months)DB={months:{}}}catch(e){}
+function save(){try{localStorage.setItem("khoroch-v1",JSON.stringify(DB))}catch(e){}}
+function todayStr(){const t=new Date();return t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0")}
+const now=new Date();
+let cur=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0");
+const M=()=>DB.months[cur]||(DB.months[cur]={income:0,items:[]});
+function incTot(m){return(m.income||0)+(m.incomes||[]).reduce((s,x)=>s+x.a,0)}
+$("mo").value=cur;$("dd").value=todayStr();$("in_d").value=todayStr();
+$("c").innerHTML=Object.entries(CATS).map(([k,v])=>`<option value="${k}">${v.l}</option>`).join("");
+$("mo").onchange=e=>{if(e.target.value){cur=e.target.value;render()}};
+$("si").onclick=()=>{M().income=Math.max(0,+$("inc").value||0);save();render()};
+$("itg").onclick=()=>{const o=$("ipn").hidden;$("ipn").hidden=!o;$("itg").setAttribute("aria-expanded",String(o))};
+$("in_ad").onclick=()=>{
+ const n=$("in_n").value.trim()||"আয়",a=+$("in_a").value;
+ if(!(a>0)){alert("সঠিক টাকার পরিমাণ দিন।");return}
+ const d=$("in_d").value||todayStr(),mk=d.slice(0,7),b=DB.months[mk]||(DB.months[mk]={income:0,items:[]});
+ (b.incomes||(b.incomes=[])).push({id:Date.now(),d,n,a});
+ if(mk!==cur){cur=mk;$("mo").value=cur}
+ $("in_n").value="";$("in_a").value="";$("in_d").value=todayStr();save();render()};
+function delInc(id){const m=M();m.incomes=(m.incomes||[]).filter(x=>x.id!==id);save();render()}
+function renderInc(m){
+ const L=[...(m.incomes||[])].sort((a,b)=>a.d<b.d?1:a.d>b.d?-1:b.id-a.id),ib=$("ib");ib.innerHTML="";
+ $("icnt").textContent=L.length?bn(L.length)+"টি":"";
+ const tt=(m.income||0)+L.reduce((q,x)=>q+x.a,0);
+ $("itot").textContent=money(tt);
+ $("imo").textContent=new Date(cur+"-01T00:00:00").toLocaleDateString("bn-BD",{month:"long",year:"numeric"});
+ $("ihint").textContent=tt?"":"এখনো আয় যোগ করা হয়নি — নিচের বাটনে চাপুন";
+ if(!L.length)ib.innerHTML='<tr><td colspan="4" class="em">এই মাসে কোনো আয়ের এন্ট্রি নেই।</td></tr>';
+ L.forEach(x=>{const r=ib.insertRow();
+  r.insertCell().textContent=new Date(x.d).toLocaleDateString("bn-BD",{day:"numeric",month:"short"});
+  r.insertCell().textContent=x.n;
+  r.insertCell().innerHTML=`<b style="color:#10b981">${money(x.a)}</b>`;
+  const b=document.createElement("button");b.className="x";b.textContent="✕";b.setAttribute("aria-label","মুছুন");b.onclick=()=>delInc(x.id);
+  r.insertCell().appendChild(b)});
+ const ex=L.reduce((s,x)=>s+x.a,0);
+ $("isum").innerHTML=`<span>নির্ধারিত আয়: <b>${money(m.income||0)}</b> + এন্ট্রি: <b>${money(ex)}</b></span><span>মোট আয়: <b>${money((m.income||0)+ex)}</b></span>`;
+}
+$("ad").onclick=()=>{
+ const n=$("n").value.trim(),a=+$("a").value;
+ if(!n||!(a>0)){alert("বিবরণ ও সঠিক টাকার পরিমাণ দিন।");return}
+ const d=$("dd").value||todayStr(),mk=d.slice(0,7);
+ (DB.months[mk]||(DB.months[mk]={income:0,items:[]})).items.push({id:Date.now(),d,n,a,c:$("c").value});
+ if(mk!==cur){cur=mk;$("mo").value=cur}
+ $("n").value="";$("a").value="";$("dd").value=todayStr();save();render()};
+function del(id){const m=M();m.items=m.items.filter(x=>x.id!==id);save();render()}
+$("th").onclick=()=>{const r=document.documentElement;const dark=r.dataset.theme==="dark"||(r.dataset.theme!=="light"&&matchMedia("(prefers-color-scheme:dark)").matches);r.dataset.theme=dark?"light":"dark"};
+function render(){
+ const m=M(),inc=incTot(m),t={n:0,i:0,u:0,s:0};
+ m.items.forEach(x=>t[x.c]+=x.a);
+ const tot=t.n+t.i+t.u+t.s,rem=inc-tot,base=inc||tot||1;
+ $("inc").value=m.income||"";renderInc(m);
+ const pc=v=>Math.round(v/base*100);
+ $("kp").innerHTML=[["মোট আয়",inc,"#4f46e5",(m.incomes&&m.incomes.length)?bn(m.incomes.length)+"টি আয়ের এন্ট্রিসহ":""],...Object.keys(CATS).map(k=>[CATS[k].l,t[k],CATS[k].c,bn(pc(t[k]))+"% আয়ের"]),["অবশিষ্ট",rem,rem<0?"#ef4444":"#0ea5e9",rem<0?"বাজেটের বেশি!":""]]
+  .map(([l,v,c,s])=>`<div class="k" style="--c:${c}"><small>${l}</small><b>${money(v)}</b><span>${s||"&nbsp;"}</span></div>`).join("");
+ let a=0,g=[];
+ Object.keys(CATS).forEach(k=>{const p=t[k]/base*100;g.push(`${CATS[k].c} ${a}% ${a+p}%`);a+=p});
+ if(rem>0&&inc)g.push(`var(--bd) ${a}% 100%`);
+ $("dn").style.background=tot?`conic-gradient(${g.join(",")})`:"var(--bd)";
+ $("dp").textContent=bn(inc?Math.min(999,tot/inc*100):0)+"%";
+ $("bars").innerHTML=Object.keys(CATS).map(k=>`<div class="bar" style="--c:${CATS[k].c}"><div class="r"><span>${CATS[k].l}</span><b>${money(t[k])}</b></div><div class="t"><i style="width:${Math.min(100,t[k]/base*100)}%"></i></div></div>`).join("");
+ const tips=[];
+ if(!inc)tips.push("প্রথমে মাসের আয় সংরক্ষণ করুন, তাহলে সঠিক শতাংশ দেখা যাবে।");
+ else if(!tot)tips.push("এখনো কোনো খরচ যোগ করা হয়নি।");
+ else{
+  if(rem<0)tips.push("⚠️ খরচ আয়ের চেয়ে বেশি হয়ে গেছে। অপ্রয়োজনীয় ও ইচ্ছাকৃত খরচ কমান।");
+  if(t.u/inc>0.1)tips.push("🔴 অপ্রয়োজনীয় খরচ আয়ের ১০%-এর বেশি। অফার, সাবস্ক্রিপশন ও অনলাইন কেনাকাটা যাচাই করুন।");
+  else if(t.u>0)tips.push("🟡 অপ্রয়োজনীয় খরচ নিয়ন্ত্রণে আছে, আরও কমানোর চেষ্টা করুন।");
+  if(t.s/inc>=0.2)tips.push("🟢 চমৎকার! সঞ্চয় আয়ের ২০% বা তার বেশি।");
+  else tips.push("💡 লক্ষ্য রাখুন: অন্তত আয়ের ২০% সঞ্চয় ও বিনিয়োগে যাক।");
+  if(t.n/inc>0.6)tips.push("🔵 প্রয়োজনীয় খরচ ৬০%-এর বেশি। বড় খরচগুলো কমানোর উপায় খুঁজুন।");
+ }
+ $("tips").innerHTML=tips.map(x=>`<div class="tip">${x}</div>`).join("");
+ $("v2").innerHTML=Object.keys(CATS).map(k=>{const its=m.items.filter(x=>x.c===k).reverse();return `<div class="col" style="--c:${CATS[k].c}"><h3>${CATS[k].l}</h3><div class="tt">${money(t[k])}</div>${its.length?its.map(x=>`<div class="it"><span><b></b><small class="dt">${new Date(x.d).toLocaleDateString("bn-BD",{day:"numeric",month:"short",year:"numeric"})}</small></span><span>${money(x.a)}</span></div>`).join(""):`<div class="no">কোনো এন্ট্রি নেই</div>`}</div>`}).join("");
+ Object.keys(CATS).forEach((k,ci)=>{const its=m.items.filter(x=>x.c===k).reverse();[...$("v2").children[ci].querySelectorAll(".it")].forEach((e,i)=>{e.querySelector("b").textContent=its[i].n})});
+ const rows=[...m.items].reverse(),tb=$("tb");
+ tb.innerHTML="";
+ if(!rows.length){tb.innerHTML=`<tr><td colspan="5" class="em">এই মাসে কোনো খরচ নেই।</td></tr>`;return}
+ rows.forEach(x=>{
+  const r=tb.insertRow();
+  r.insertCell().textContent=new Date(x.d).toLocaleDateString("bn-BD",{day:"numeric",month:"short"});
+  r.insertCell().textContent=x.n;
+  r.insertCell().innerHTML=`<span class="tag" style="--c:${CATS[x.c].c}">${CATS[x.c].l}</span>`;
+  r.insertCell().innerHTML=`<b>${money(x.a)}</b>`;
+  const b=document.createElement("button");b.className="x";b.textContent="✕";b.setAttribute("aria-label","মুছুন");b.onclick=()=>del(x.id);
+  r.insertCell().appendChild(b);
+ });
+}
+function tab(v){$("v1").hidden=v!==1;$("v2").hidden=v!==2;$("t1").classList.toggle("on",v===1);$("t2").classList.toggle("on",v===2)}
+$("t1").onclick=()=>tab(1);$("t2").onclick=()=>tab(2);
+function ptab(v){$("pn1").hidden=v!==1;$("pn2").hidden=v!==2;$("p1").classList.toggle("on",v===1);$("p2").classList.toggle("on",v===2)}
+$("p1").onclick=()=>ptab(1);$("p2").onclick=()=>ptab(2);
+$("lgo").onclick=()=>{ptab(1);$("p1").scrollIntoView({behavior:"smooth",block:"center"})};
+/* ---------- PDF রিপোর্ট ---------- */
+const p2=n=>String(n).padStart(2,"0");
+const ymd=d=>d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate());
+const bd=(s,o)=>new Date(s+"T00:00:00").toLocaleDateString("bn-BD",o);
+$("pd").value=ymd(new Date());
+function pkSync(){$("pd").hidden=$("pk").value==="m"}
+$("pk").onchange=pkSync;pkSync();
+function collect(kind){
+ const ds=$("pd").value||todayStr();
+ if(kind==="m"){
+  const m=DB.months[cur]||{income:0,items:[]};
+  const dim=new Date(+cur.slice(0,4),+cur.slice(5,7),0).getDate();
+  return{kind,label:bd(cur+"-01",{month:"long",year:"numeric"}),items:[...m.items],income:incTot(m),baseInc:m.income||0,incomes:[...(m.incomes||[])],month:true,from:cur+"-01",days:dim,file:"hisabi-"+cur};
+ }
+ let from=ds,days=1,label=bd(ds,{day:"numeric",month:"long",year:"numeric"});
+ if(kind==="w"){const s=new Date(ds+"T00:00:00");s.setDate(s.getDate()-6);from=ymd(s);days=7;
+  label=bd(from,{day:"numeric",month:"short",year:"numeric"})+" – "+bd(ds,{day:"numeric",month:"short",year:"numeric"})}
+ const items=[],incomes=[];
+ Object.values(DB.months).forEach(m=>{m.items.forEach(x=>{if(x.d>=from&&x.d<=ds)items.push(x)});(m.incomes||[]).forEach(x=>{if(x.d>=from&&x.d<=ds)incomes.push(x)})});
+ return{kind,label,items,incomes,income:0,baseInc:0,month:false,from,days,file:"hisabi-"+(kind==="w"?"week-":"day-")+ds};
+}
+async function makePages(r){
+ const FF='"Hind Siliguri","Noto Sans Bengali","Segoe UI",sans-serif';
+ try{await document.fonts.load('600 24px "Hind Siliguri"','আ৳')}catch(e){}
+ const W=1190,H=1684,MX=70,CW=W-2*MX,pages=[];let c,x,y;
+ const mny=v=>(v<0?"-":"")+money(Math.abs(v));
+ const cmp=v=>v>=1000?(v/1000).toLocaleString("bn-BD",{maximumFractionDigits:1})+"K":bn(v);
+ const font=(px,w)=>(w||400)+" "+px+"px "+FF;
+ const newPage=()=>{c=document.createElement("canvas");c.width=W;c.height=H;x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,W,H);x.textBaseline="alphabetic";pages.push(c)};
+ const txt=(t,tx,ty,px,col,w,al)=>{x.font=font(px,w);x.fillStyle=col||"#0f172a";x.textAlign=al||"left";x.fillText(t,tx,ty)};
+ const rr=(px,py,w,h,rad)=>{const q=Math.min(rad,w/2,h/2);x.beginPath();x.moveTo(px+q,py);x.arcTo(px+w,py,px+w,py+h,q);x.arcTo(px+w,py+h,px,py+h,q);x.arcTo(px,py+h,px,py,q);x.arcTo(px,py,px+w,py,q);x.closePath()};
+ const card=(px,py,w,h)=>{x.save();x.shadowColor="rgba(15,23,42,.10)";x.shadowBlur=18;x.shadowOffsetY=4;x.fillStyle="#fff";rr(px,py,w,h,20);x.fill();x.restore();x.strokeStyle="#e2e8f0";x.lineWidth=2;rr(px,py,w,h,20);x.stroke()};
+ const fit=(t,mw,px,w)=>{x.font=font(px,w);if(x.measureText(t).width<=mw)return t;let s=[...t];while(s.length>1&&x.measureText(s.join("")+"…").width>mw)s.pop();return s.join("")+"…"};
+ const shrink=(t,mw,px,w)=>{while(px>16){x.font=font(px,w);if(x.measureText(t).width<=mw)break;px-=2}return px};
+ const wrap=(t,mw,px,w)=>{x.font=font(px,w);const out=[];let line="";for(const ch of [...t]){const t2=line+ch;if(x.measureText(t2).width>mw&&line){out.push(line);line=ch}else line=t2}if(line)out.push(line);return out};
+ const nice=v=>{if(v<=0)return 1;const p=Math.pow(10,Math.floor(Math.log10(v))),f=v/p;return(f<=1?1:f<=2?2:f<=5?5:10)*p};
+ const kind=r.kind,tn={d:"দৈনিক রিপোর্ট",w:"সাপ্তাহিক রিপোর্ট",m:"মাসিক রিপোর্ট"}[kind];
+
+ /* হিসাব */
+ const tot={n:0,i:0,u:0,s:0};r.items.forEach(i=>tot[i.c]+=i.a);
+ const sum=tot.n+tot.i+tot.u+tot.s,cnt=r.items.length,inc=r.income,rem=inc-sum;
+ const activeDays=new Set(r.items.map(i=>i.d)).size||1;
+ const top=[...r.items].sort((a,b)=>b.a-a.a);
+ const per=new Array(r.days).fill(0);
+ r.items.forEach(it=>{let idx;
+  if(r.month){if(it.d.slice(0,7)!==cur)return;idx=+it.d.slice(8,10)-1}
+  else idx=Math.round((new Date(it.d+"T00:00:00")-new Date(r.from+"T00:00:00"))/864e5);
+  if(idx>=0&&idx<r.days)per[idx]+=it.a});
+ const dayOf=i=>{const d=new Date(r.from+"T00:00:00");d.setDate(d.getDate()+i);return d};
+ const catKeys=Object.keys(CATS);
+ const pct=v=>sum?bn(v/sum*100)+"%":"০%";
+
+ /* ===== পৃষ্ঠা ১ ===== */
+ newPage();
+ const g=x.createLinearGradient(0,0,W,230);g.addColorStop(0,"#1e1b4b");g.addColorStop(1,"#4f46e5");x.fillStyle=g;x.fillRect(0,0,W,230);
+ x.fillStyle="rgba(255,255,255,.07)";x.beginPath();x.arc(W-60,20,170,0,7);x.fill();x.beginPath();x.arc(W-260,230,110,0,7);x.fill();
+ txt("💰 হিসাবি",MX,110,60,"#fff",700);
+ txt("ব্যক্তিগত বাজেট ও খরচ বিশ্লেষণ",MX,164,28,"rgba(255,255,255,.8)",400);
+ txt(tn,W-MX,86,28,"rgba(255,255,255,.85)",500,"right");
+ txt(r.label,W-MX,142,r.label.length>24?34:46,"#fff",700,"right");
+ txt("তৈরির তারিখ: "+bd(todayStr(),{day:"numeric",month:"long",year:"numeric"}),W-MX,188,22,"rgba(255,255,255,.75)",400,"right");
+
+ /* KPI */
+ const kw=(CW-3*22)/4,ky=272,kh=164;
+ const kpis=r.month?[
+  ["মোট আয়",mny(inc),inc?((r.incomes&&r.incomes.length)?"নির্ধারিত + "+bn(r.incomes.length)+"টি এন্ট্রি":"মাসিক বাজেট"):"আয় সংরক্ষণ করা হয়নি","#4f46e5"],
+  ["মোট খরচ",mny(sum),inc?bn(sum/inc*100)+"% আয়ের":bn(cnt)+" টি লেনদেন","#dc2626"],
+  ["সঞ্চয় ও বিনিয়োগ",mny(tot.s),inc?bn(tot.s/inc*100)+"% আয়ের":"","#10b981"],
+  ["অবশিষ্ট",mny(rem),rem<0?"বাজেটের বেশি!":"খরচের পর",rem<0?"#dc2626":"#0ea5e9"]
+ ]:[
+  ["মোট খরচ",mny(sum),"মোট ধরন: "+bn(catKeys.filter(k=>tot[k]>0).length)+" টি","#dc2626"],
+  ["লেনদেন",bn(cnt)+" টি","রেকর্ড করা এন্ট্রি","#4f46e5"],
+  ["দিনপ্রতি গড়",mny(sum/activeDays),"খরচ হওয়া "+bn(activeDays)+" দিনে","#f59e0b"],
+  ["সর্বোচ্চ একক খরচ",mny(top[0].a),fit(top[0].n,kw-48,22),"#10b981"]
+ ];
+ kpis.forEach(([l,v,s,col],i)=>{const px=MX+i*(kw+22);card(px,ky,kw,kh);
+  x.save();rr(px,ky,kw,kh,20);x.clip();x.fillStyle=col;x.fillRect(px,ky,kw,9);x.restore();
+  txt(l,px+24,ky+54,24,"#64748b",500);
+  txt(v,px+24,ky+108,shrink(v,kw-48,40,700),col,700);
+  txt(s,px+24,ky+144,22,"#94a3b8",400)});
+
+ /* ডোনাট + ট্রেন্ড */
+ const sy=470,sh=450,lw=480,rw=CW-lw-22,rx=MX+lw+22;
+ card(MX,sy,lw,sh);
+ txt("খরচের বিন্যাস",MX+28,sy+54,30,"#0f172a",700);
+ const cx=MX+lw/2,cy=sy+168,R=106,RW=34;
+ x.lineWidth=RW;x.lineCap="butt";x.strokeStyle="#e2e8f0";x.beginPath();x.arc(cx,cy,R-RW/2,0,Math.PI*2);x.stroke();
+ let ang=-Math.PI/2;
+ catKeys.forEach(k=>{if(!tot[k])return;const a=tot[k]/sum*Math.PI*2;x.strokeStyle=CATS[k].c;x.beginPath();x.arc(cx,cy,R-RW/2,ang,ang+a-(a<6.2?0.025:0));x.stroke();ang+=a});
+ txt("মোট খরচ",cx,cy-8,22,"#64748b",400,"center");
+ const sv=mny(sum);txt(sv,cx,cy+28,shrink(sv,2*(R-RW)-14,30,700),"#0f172a",700,"center");
+ catKeys.forEach((k,i)=>{const ly=sy+326+i*34;
+  x.fillStyle=CATS[k].c;rr(MX+28,ly-18,20,20,6);x.fill();
+  txt(CATS[k].l,MX+60,ly,24,"#0f172a",500);
+  txt(pct(tot[k])+"  •  "+mny(tot[k]),MX+lw-28,ly,24,"#475569",600,"right")});
+
+ card(rx,sy,rw,sh);
+ if(kind==="d"){
+  txt("শীর্ষ খরচসমূহ",rx+28,sy+54,30,"#0f172a",700);
+  const tl=top.slice(0,6),mx=tl[0].a||1;
+  tl.forEach((it,i)=>{const ry=sy+112+i*55;
+   txt(fit(it.n,rw-250,24),rx+28,ry,24,"#0f172a",500);
+   txt(mny(it.a),rx+rw-28,ry,24,"#0f172a",700,"right");
+   x.fillStyle="#eef2ff";rr(rx+28,ry+12,rw-56,14,7);x.fill();
+   x.fillStyle=CATS[it.c].c;rr(rx+28,ry+12,Math.max(14,(rw-56)*it.a/mx),14,7);x.fill()});
+ }else{
+  txt(r.month?"দৈনিক খরচের ধারা":"সাপ্তাহিক খরচের ধারা",rx+28,sy+54,30,"#0f172a",700);
+  let mi=0;per.forEach((v,i)=>{if(v>per[mi])mi=i});
+  txt("সর্বোচ্চ: "+bd(ymd(dayOf(mi)),{day:"numeric",month:"short"})+" – "+mny(per[mi]),rx+28,sy+90,22,"#64748b",400);
+  const x0=rx+96,x1=rx+rw-30,y0=sy+130,y1=sy+360,nm=nice(per[mi]);
+  x.lineWidth=2;
+  for(let t=0;t<=4;t++){const gy=y1-(y1-y0)*t/4;x.strokeStyle=t?"#eef2f7":"#cbd5e1";x.beginPath();x.moveTo(x0,gy);x.lineTo(x1,gy);x.stroke();
+   txt(cmp(nm*t/4),x0-12,gy+7,20,"#94a3b8",400,"right")}
+  const slot=(x1-x0)/per.length,bw=Math.min(52,slot*0.64);
+  per.forEach((v,i)=>{const bx=x0+i*slot+(slot-bw)/2,bh=(y1-y0)*v/nm;
+   if(v>0){const gr=x.createLinearGradient(0,y1-bh,0,y1);if(i===mi){gr.addColorStop(0,"#f59e0b");gr.addColorStop(1,"#d97706")}else{gr.addColorStop(0,"#818cf8");gr.addColorStop(1,"#4f46e5")}
+    x.fillStyle=gr;rr(bx,y1-bh,bw,bh+4,Math.min(8,bw/2));x.fill()}
+   if(r.month){if(i===0||(i+1)%5===0)txt(bn(i+1),bx+bw/2,y1+32,20,"#64748b",400,"center")}
+   else{txt(dayOf(i).toLocaleDateString("bn-BD",{weekday:"short"}),bx+bw/2,y1+30,19,"#64748b",500,"center");txt(bn(dayOf(i).getDate()),bx+bw/2,y1+54,19,"#94a3b8",400,"center")}});
+  if(per[mi]>0){const bx=x0+mi*slot+slot/2;txt(cmp(per[mi]),Math.min(Math.max(bx,x0+30),x1-30),y1-(y1-y0)*per[mi]/nm-10,20,"#b45309",700,"center")}
+ }
+
+ /* বাজেট স্বাস্থ্য */
+ const hy=sy+sh+25,hh=610;
+ card(MX,hy,CW,hh);
+ txt(r.month&&inc?"বাজেট স্বাস্থ্য (আয়ের অনুপাতে)":"খরচের অনুপাত (মোট খরচের শতাংশ)",MX+28,hy+56,30,"#0f172a",700);
+ const base=r.month&&inc?inc:(sum||1);
+ const tg={n:{max:60},u:{max:10},s:{min:20}};
+ const bx0=MX+28,bwid=CW-56;
+ catKeys.forEach((k,i)=>{const ry=hy+120+i*88,p=tot[k]/base*100,t=r.month&&inc?tg[k]:null;
+  txt(CATS[k].l,bx0,ry,26,"#0f172a",600);
+  let ok=null;if(t){ok=t.max!==undefined?p<=t.max:p>=t.min;
+   x.font=font(24,600);const lw2=x.measureText(CATS[k].l).width;x.font=font(21,600);
+   const ct=ok?"লক্ষ্যের মধ্যে ✓":(t.max!==undefined?"লক্ষ্যের বেশি!":"লক্ষ্যের কম");const cw2=x.measureText(ct).width+30;
+   x.fillStyle=ok?"#dcfce7":"#fee2e2";rr(bx0+lw2+22,ry-27,cw2,36,18);x.fill();txt(ct,bx0+lw2+22+15,ry-1,21,ok?"#166534":"#991b1b",600)}
+  txt(mny(tot[k])+"  •  "+bn(p)+"%",bx0+bwid,ry,26,CATS[k].c,700,"right");
+  x.fillStyle="#eef2f7";rr(bx0,ry+16,bwid,20,10);x.fill();
+  const fw=Math.max(p>0?20:0,bwid*Math.min(100,p)/100);if(fw>0){x.fillStyle=CATS[k].c;rr(bx0,ry+16,fw,20,10);x.fill()}
+  if(t){const mk=t.max!==undefined?t.max:t.min;const mxp=bx0+bwid*mk/100;x.strokeStyle="#0f172a";x.lineWidth=3;x.beginPath();x.moveTo(mxp,ry+8);x.lineTo(mxp,ry+44);x.stroke()}});
+ if(r.month&&inc)txt("কালো দাগ = লক্ষ্যসীমা (প্রয়োজনীয় ≤৬০%, অপ্রয়োজনীয় ≤১০%, সঞ্চয় ≥২০%)",bx0,hy+462,21,"#64748b",400);
+ let ins;
+ if(r.month&&inc){
+  if(rem<0)ins="⚠️ খরচ আয়ের চেয়ে বেশি হয়ে গেছে। অপ্রয়োজনীয় ও ইচ্ছাকৃত খরচ কমান।";
+  else if(tot.u/inc>0.1)ins="🔴 অপ্রয়োজনীয় খরচ আয়ের ১০%-এর বেশি। অফার, সাবস্ক্রিপশন ও অনলাইন কেনাকাটা যাচাই করুন।";
+  else if(tot.s/inc>=0.2)ins="🟢 চমৎকার! সঞ্চয় আয়ের ২০% বা তার বেশি। এভাবেই চালিয়ে যান।";
+  else ins="💡 লক্ষ্য রাখুন: অন্তত আয়ের ২০% সঞ্চয় ও বিনিয়োগে যাক।";
+ }else{
+  const tk=catKeys.reduce((a,b)=>tot[b]>tot[a]?b:a);
+  ins="📌 সবচেয়ে বেশি খরচ হয়েছে "+CATS[tk].l+" খাতে ("+pct(tot[tk])+")। সর্বোচ্চ একক খরচ: "+top[0].n+" – "+mny(top[0].a)+"।";
+ }
+ const il=wrap(ins,bwid-48,25,500).slice(0,2),ih=il.length*38+30,iy=hy+hh-ih-28;
+ x.fillStyle="#eef2ff";rr(bx0,iy,bwid,ih,16);x.fill();x.fillStyle="#4f46e5";rr(bx0,iy,8,ih,4);x.fill();
+ il.forEach((l,i)=>txt(l,bx0+28,iy+42+i*38,25,"#312e81",500));
+
+ /* ===== পরের পৃষ্ঠা ===== */
+ const strip=()=>{newPage();x.fillStyle="#1e1b4b";x.fillRect(0,0,W,84);txt("💰 হিসাবি",MX,56,34,"#fff",700);txt(tn+" • "+r.label,W-MX,54,24,"rgba(255,255,255,.85)",500,"right");y=124};
+ strip();
+ const tn5=top.slice(0,5);
+ const th=96+tn5.length*76;
+ card(MX,y,CW,th);
+ txt("🏆 শীর্ষ "+bn(tn5.length)+" খরচ",MX+28,y+58,30,"#0f172a",700);
+ tn5.forEach((it,i)=>{const ry=y+124+i*76;
+  x.fillStyle=CATS[it.c].c;x.beginPath();x.arc(MX+52,ry-10,22,0,7);x.fill();txt(bn(i+1),MX+52,ry-1,24,"#fff",700,"center");
+  txt(fit(it.n,560,28),MX+96,ry-8,28,"#0f172a",600);
+  txt(bd(it.d,{day:"numeric",month:"short"})+" • "+CATS[it.c].l,MX+96,ry+22,21,"#64748b",400);
+  txt(mny(it.a),MX+CW-28,ry+4,30,CATS[it.c].c,700,"right");
+  if(i<tn5.length-1){x.fillStyle="#eef2f7";x.fillRect(MX+28,ry+38,CW-56,2)}});
+ y+=th+40;
+
+ /* আয়ের বিবরণ */
+ {
+  const IR=[];
+  if(r.month&&r.baseInc>0)IR.push({d:null,n:"নির্ধারিত মাসিক আয়",a:r.baseInc});
+  [...(r.incomes||[])].sort((a,b)=>a.d<b.d?-1:a.d>b.d?1:a.id-b.id).forEach(i=>IR.push(i));
+  if(IR.length){
+   const IC={d:MX+18,n:MX+190,a:MX+CW-18};
+   const ihead=()=>{x.fillStyle="#065f46";rr(MX,y,CW,58,12);x.fill();txt("তারিখ",IC.d,y+39,24,"#fff",600);txt("আয়ের উৎস",IC.n,y+39,24,"#fff",600);txt("টাকা",IC.a,y+39,24,"#fff",600,"right");y+=64};
+   if(y+200>H-120){strip()}
+   txt("আয়ের বিবরণ",MX,y+30,32,"#0f172a",700);y+=56;ihead();
+   IR.forEach((it,i)=>{
+    const ls=wrap(it.n,IC.a-IC.n-220,27,400),rh=Math.max(1,ls.length)*34+26;
+    if(y+rh>H-120){strip();ihead()}
+    if(i%2===0){x.fillStyle="#f0fdf4";x.fillRect(MX,y,CW,rh)}
+    const b=y+rh/2-(ls.length-1)*17+9;
+    txt(it.d?bd(it.d,{day:"numeric",month:"short"}):"—",IC.d,b,25,"#475569");
+    ls.forEach((l,k)=>txt(l,IC.n,b+k*34,27,"#0f172a"));
+    txt(mny(it.a),IC.a,b,27,"#059669",700,"right");
+    x.fillStyle="#d1fae5";x.fillRect(MX,y+rh-1,CW,1.5);y+=rh});
+   const it2=IR.reduce((q,i)=>q+i.a,0);
+   if(y+100>H-100){strip()}
+   y+=18;x.fillStyle="#10b981";rr(MX,y,CW,70,16);x.fill();
+   txt("মোট আয়  ("+bn(IR.length)+" টি এন্ট্রি)",MX+28,y+46,28,"#fff",600);txt(mny(it2),MX+CW-28,y+47,32,"#fff",700,"right");
+   y+=70+44;
+  }
+ }
+ /* বিস্তারিত টেবিল */
+ const COL={d:MX+18,n:MX+190,c:MX+660,a:MX+CW-18};
+ const thead=()=>{x.fillStyle="#1e1b4b";rr(MX,y,CW,58,12);x.fill();
+  txt("তারিখ",COL.d,y+39,24,"#fff",600);txt("বিবরণ",COL.n,y+39,24,"#fff",600);txt("ধরন",COL.c,y+39,24,"#fff",600);txt("টাকা",COL.a,y+39,24,"#fff",600,"right");y+=64};
+ txt("লেনদেনের বিস্তারিত",MX,y+30,32,"#0f172a",700);y+=56;
+ thead();
+ const list=[...r.items].sort((a,b)=>a.d<b.d?-1:a.d>b.d?1:a.id-b.id);
+ list.forEach((it,i)=>{
+  const ls=wrap(it.n,COL.c-COL.n-24,27,400),rh=Math.max(1,ls.length)*34+30;
+  if(y+rh>H-120){strip();y=124;thead()}
+  if(i%2===0){x.fillStyle="#f8fafc";x.fillRect(MX,y,CW,rh)}
+  const b=y+rh/2-(ls.length-1)*17+9;
+  txt(bd(it.d,{day:"numeric",month:"short"}),COL.d,b,25,"#475569");
+  ls.forEach((l,k)=>txt(l,COL.n,b+k*34,27,"#0f172a"));
+  x.font=font(21,600);const ctw=x.measureText(CATS[it.c].l).width+30;
+  x.fillStyle=CATS[it.c].c;rr(COL.c,y+rh/2-18,ctw,36,18);x.fill();txt(CATS[it.c].l,COL.c+15,y+rh/2+7,21,"#fff",600);
+  txt(mny(it.a),COL.a,b,27,"#0f172a",700,"right");
+  x.fillStyle="#e2e8f0";x.fillRect(MX,y+rh-1,CW,1.5);y+=rh});
+ if(y+110>H-100){strip()}
+ y+=22;x.fillStyle="#4f46e5";rr(MX,y,CW,78,16);x.fill();
+ txt("মোট খরচ  ("+bn(cnt)+" টি লেনদেন)",MX+28,y+50,28,"#fff",600);txt(mny(sum),MX+CW-28,y+51,34,"#fff",700,"right");
+
+ /* ফুটার */
+ pages.forEach((pg,i)=>{const cx=pg.getContext("2d");cx.fillStyle="#e2e8f0";cx.fillRect(MX,H-84,CW,2);cx.font="400 22px "+FF;cx.fillStyle="#64748b";
+  cx.textAlign="left";cx.fillText("Designed & Developed by Abhi",MX,H-44);
+  cx.textAlign="right";cx.fillText("হিসাবি • পৃষ্ঠা "+bn(i+1)+"/"+bn(pages.length),W-MX,H-44)});
+ return pages;
+}
+function buildPDF(pages){
+ const enc=new TextEncoder(),chunks=[],offs=[];let len=0;
+ const push=b=>{if(typeof b==="string")b=enc.encode(b);chunks.push(b);len+=b.length};
+ const PW=595.28,PH=841.89,n=pages.length;
+ push("%PDF-1.4\n");
+ offs[1]=len;push("1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n");
+ offs[2]=len;push("2 0 obj\n<< /Type /Pages /Count "+n+" /Kids ["+pages.map((_,i)=>(3+3*i)+" 0 R").join(" ")+"] >>\nendobj\n");
+ pages.forEach((pg,i)=>{
+  const bin=atob(pg.toDataURL("image/jpeg",0.93).split(",")[1]),img=new Uint8Array(bin.length);
+  for(let k=0;k<bin.length;k++)img[k]=bin.charCodeAt(k);
+  const po=3+3*i,io=po+1,co=po+2,cs="q "+PW+" 0 0 "+PH+" 0 0 cm /Im0 Do Q";
+  offs[po]=len;push(po+" 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 "+PW+" "+PH+"] /Resources << /XObject << /Im0 "+io+" 0 R >> >> /Contents "+co+" 0 R >>\nendobj\n");
+  offs[io]=len;push(io+" 0 obj\n<< /Type /XObject /Subtype /Image /Width "+pg.width+" /Height "+pg.height+" /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length "+img.length+" >>\nstream\n");push(img);push("\nendstream\nendobj\n");
+  offs[co]=len;push(co+" 0 obj\n<< /Length "+cs.length+" >>\nstream\n"+cs+"\nendstream\nendobj\n");
+ });
+ const xr=len,total=3*n+3;
+ push("xref\n0 "+total+"\n0000000000 65535 f \n");
+ for(let i=1;i<total;i++)push(String(offs[i]).padStart(10,"0")+" 00000 n \n");
+ push("trailer\n<< /Size "+total+" /Root 1 0 R >>\nstartxref\n"+xr+"\n%%EOF");
+ return new Blob(chunks,{type:"application/pdf"});
+}
+/* ফাইল সেভ/শেয়ার: অ্যাপের ধরন অনুযায়ী একাধিক পদ্ধতি */
+async function viaNative(blob,name){
+ const C=window.Capacitor,P=C&&C.Plugins;
+ if(!(C&&C.isNativePlatform&&C.isNativePlatform()&&P&&P.Filesystem))return false;
+ const b64=await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(String(fr.result).split(",")[1]);fr.onerror=rej;fr.readAsDataURL(blob)});
+ const w=await P.Filesystem.writeFile({path:name,data:b64,directory:"CACHE"});
+ if(P.Share)await P.Share.share({title:name,url:w.uri,dialogTitle:"রিপোর্ট সেভ/শেয়ার করুন"});
+ return true;
+}
+async function deliver(blob,name){
+ try{if(await viaNative(blob,name))return"native"}catch(e){}
+ const f=new File([blob],name,{type:"application/pdf"});
+ if(/Android|iPhone|iPad/i.test(navigator.userAgent)&&navigator.canShare&&navigator.canShare({files:[f]})){
+  try{await navigator.share({files:[f],title:name});return"share"}catch(e){if(e&&e.name==="AbortError")return"share"}
+ }
+ const a=document.createElement("a");a.download=name;a.style.display="none";document.body.appendChild(a);
+ if(/Android/.test(navigator.userAgent)&&/; wv\)/.test(navigator.userAgent)){
+  /* অ্যাপের ভেতরের WebView: data: লিংকে ডাউনলোড হ্যান্ডলার বেশি কাজ করে */
+  a.href=await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(fr.result);fr.onerror=rej;fr.readAsDataURL(blob)});
+  a.click();a.remove();return"link";
+ }
+ const u=URL.createObjectURL(blob);a.href=u;a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(u),60000);
+ return"link";
+}
+let PV=null;
+$("pb").onclick=async()=>{
+ const kind=$("pk").value,r=collect(kind),msg=$("pm"),b=$("pb");
+ if(!r.items.length){msg.textContent="এই সময়ে কোনো খরচ নেই, তাই রিপোর্ট বানানো হয়নি।";return}
+ b.disabled=true;msg.textContent="রিপোর্ট তৈরি হচ্ছে…";
+ try{
+  const pages=await makePages(r);
+  PV={blob:buildPDF(pages),name:r.file+".pdf"};
+  $("pvi").innerHTML="";
+  pages.forEach(pg=>{const im=new Image();im.src=pg.toDataURL("image/jpeg",0.85);im.alt="রিপোর্টের পৃষ্ঠা";$("pvi").appendChild(im)});
+  $("pvh").textContent="রিপোর্ট প্রস্তুত। সেভ করতে ওপরের বাটনে চাপুন।";
+  $("pv").hidden=false;$("pv").scrollTop=0;msg.textContent="";
+ }catch(e){msg.textContent="রিপোর্ট তৈরি করা যায়নি। আবার চেষ্টা করুন।";console.error(e)}
+ b.disabled=false;
+};
+$("pvd").onclick=async()=>{
+ if(!PV)return;
+ try{const how=await deliver(PV.blob,PV.name);
+  $("pvh").textContent=how==="link"?"ডাউনলোড শুরু হয়েছে। কিছু না হলে নিচের রিপোর্টের স্ক্রিনশট নিয়ে রাখুন।":"সেভ/শেয়ার মেনু খোলা হয়েছে।"}
+ catch(e){$("pvh").textContent="ডাউনলোড করা যায়নি। নিচের রিপোর্টের স্ক্রিনশট নিয়ে রাখুন।"}
+};
+$("pvc").onclick=()=>{$("pv").hidden=true;$("pvi").innerHTML="";PV=null};
+render();
+</script>
+</body>
+</html>
